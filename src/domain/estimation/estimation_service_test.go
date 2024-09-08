@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGetDates(t *testing.T) {
+func TestEstimationService_GetDates(t *testing.T) {
 	var testCases = []struct {
 		name          string
 		historic      historic_consomation.HistoricConsomation
@@ -74,7 +74,7 @@ func TestGetDates(t *testing.T) {
 	}
 }
 
-func TestEstimate(t *testing.T) {
+func TestEstimationService_Estimate(t *testing.T) {
 	expectedEstimation := uint16(84)
 
 	historic := historic_consomation.HistoricConsomation{
