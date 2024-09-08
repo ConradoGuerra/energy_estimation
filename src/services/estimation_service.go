@@ -3,6 +3,7 @@ package services
 import (
 	"energy_estimation/src/domain/estimation"
 	"energy_estimation/src/domain/historic_consomation"
+	"energy_estimation/src/domain/tariff"
 	"fmt"
 )
 
@@ -12,12 +13,10 @@ func NewEstimationService(historic *historic_consomation.HistoricConsomation) (e
 	if error != nil {
 		return estimation.Estimation{}, fmt.Errorf("error %v", error)
 	}
-	totalEstimation := service.Estimate(historic)
+	estimations := service.Estimate(historic, tariff.TariffsRules)
 
 	return estimation.Estimation{
-		Pdl:          historic.Client_Id,
-		EstimationId: "estimationId",
-		Begin:        begin,
-		End:          end,
-		Estimation:   totalEstimation}, nil
+		Begin:                 begin,
+		End:                   end,
+		ConsomationEstimation: estimations}, nil
 }

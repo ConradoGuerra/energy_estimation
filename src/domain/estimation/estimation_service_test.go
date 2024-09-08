@@ -3,6 +3,7 @@ package estimation_test
 import (
 	"energy_estimation/src/domain/estimation"
 	"energy_estimation/src/domain/historic_consomation"
+	"energy_estimation/src/domain/tariff"
 	"errors"
 	"testing"
 	"time"
@@ -78,10 +79,10 @@ func TestEstimationService_Estimate(t *testing.T) {
 	testCases := []struct {
 		name               string
 		historic           historic_consomation.HistoricConsomation
-		expectedEstimation uint16
+		expectedEstimation []estimation.ConsomationEstimation
 	}{
 		{
-			name: "should return the expected estimation",
+			name: "should return all expected estimations",
 			historic: historic_consomation.HistoricConsomation{
 				Client_Id: "Client",
 				Measures: []historic_consomation.Measure{
@@ -102,7 +103,12 @@ func TestEstimationService_Estimate(t *testing.T) {
 					},
 				},
 			},
-			expectedEstimation: uint16(84),
+			expectedEstimation: []estimation.ConsomationEstimation{
+				{Id: "BASE", Estimation: uint16(84)},
+				{Id: "OFF-PEAK", Estimation: uint16(42)},
+				{Id: "PEAK", Estimation: uint16(42)},
+				{Id: "CUSTOM", Estimation: uint16(56)},
+			},
 		},
 	}
 
@@ -110,11 +116,10 @@ func TestEstimationService_Estimate(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			assert := assert.New(t)
 			estimationService := estimation.EstimationService{}
-			estimation := estimationService.Estimate(&testCase.historic)
+			estimation := estimationService.Estimate(&testCase.historic, tariff.TariffsRules)
 
 			assert.Equal(testCase.expectedEstimation, estimation)
 		})
 
 	}
-
 }
