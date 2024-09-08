@@ -1,8 +1,8 @@
 package main
 
 import (
-	"energy_estimation/app/domain/historic_consomation"
-	"energy_estimation/app/services"
+	"energy_estimation/src/domain/historic_consomation"
+	"energy_estimation/src/services"
 	"fmt"
 )
 

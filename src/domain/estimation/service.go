@@ -1,7 +1,7 @@
 package estimation
 
 import (
-	"energy_estimation/app/domain/historic_consomation"
+	"energy_estimation/src/domain/historic_consomation"
 	"fmt"
 	"time"
 )
