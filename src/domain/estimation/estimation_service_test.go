@@ -19,7 +19,7 @@ func TestEstimationService_GetDates(t *testing.T) {
 		expectedError error
 	}{
 		{
-			name: "returns the first begin date and last end date from measures",
+			name: "should return earliest begin and latest end from measures",
 			historic: historic_consomation.HistoricConsomation{
 				Client_Id: "Client",
 				Measures: []historic_consomation.Measure{
@@ -45,7 +45,7 @@ func TestEstimationService_GetDates(t *testing.T) {
 			expectedError: nil,
 		},
 		{
-			name: "no measures present",
+			name: "should return an error when no measure is present",
 			historic: historic_consomation.HistoricConsomation{
 				Client_Id: "Client",
 				Measures:  []historic_consomation.Measure{},
@@ -75,34 +75,46 @@ func TestEstimationService_GetDates(t *testing.T) {
 }
 
 func TestEstimationService_Estimate(t *testing.T) {
-	expectedEstimation := uint16(84)
-
-	historic := historic_consomation.HistoricConsomation{
-		Client_Id: "Client",
-		Measures: []historic_consomation.Measure{
-			{
-				Consomation: 12,
-				Begin:       "2024/08/01",
-				End:         "2024/08/31",
+	testCases := []struct {
+		name               string
+		historic           historic_consomation.HistoricConsomation
+		expectedEstimation uint16
+	}{
+		{
+			name: "should return the expected estimation",
+			historic: historic_consomation.HistoricConsomation{
+				Client_Id: "Client",
+				Measures: []historic_consomation.Measure{
+					{
+						Consomation: 12,
+						Begin:       "2024/08/01",
+						End:         "2024/08/31",
+					},
+					{
+						Consomation: 5,
+						Begin:       "2024/05/01",
+						End:         "2024/05/31",
+					},
+					{
+						Consomation: 67,
+						Begin:       "2024/10/01",
+						End:         "2024/10/31",
+					},
+				},
 			},
-			{
-				Consomation: 5,
-				Begin:       "2024/05/01",
-				End:         "2024/05/31",
-			},
-			{
-				Consomation: 67,
-				Begin:       "2024/10/01",
-				End:         "2024/10/31",
-			},
+			expectedEstimation: uint16(84),
 		},
 	}
 
-	assert := assert.New(t)
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			assert := assert.New(t)
+			estimationService := estimation.EstimationService{}
+			estimation := estimationService.Estimate(&testCase.historic)
 
-	estimationService := estimation.EstimationService{}
-	estimation := estimationService.Estimate(&historic)
+			assert.Equal(testCase.expectedEstimation, estimation)
+		})
 
-	assert.Equal(expectedEstimation, estimation)
+	}
 
 }
