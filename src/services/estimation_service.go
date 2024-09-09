@@ -16,7 +16,7 @@ func NewEstimationService(historic *historic_consomation.HistoricConsomation) (e
 	estimations := service.Estimate(historic, tariff.TariffsRules)
 
 	return estimation.Estimation{
-		Begin:                 begin,
-		End:                   end,
-		ConsomationEstimation: estimations}, nil
+		Begin:                  begin,
+		End:                    end,
+		ConsomationsEstimation: estimations}, nil
 }
