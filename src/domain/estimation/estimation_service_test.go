@@ -2,7 +2,6 @@ package estimation_test
 
 import (
 	"energy_estimation/src/domain/estimation"
-	"energy_estimation/src/domain/historic_consomation"
 	"energy_estimation/src/domain/tariff"
 	"errors"
 	"testing"
@@ -14,28 +13,28 @@ import (
 func TestEstimationService_GetDates(t *testing.T) {
 	var testCases = []struct {
 		name          string
-		historic      historic_consomation.HistoricConsomation
+		historic      historic_consumption.HistoricConsumption
 		expectedBegin time.Time
 		expectedEnd   time.Time
 		expectedError error
 	}{
 		{
 			name: "should return earliest begin and latest end from measures",
-			historic: historic_consomation.HistoricConsomation{
+			historic: historic_consumption.HistoricConsumption{
 				Client_Id: "Client",
-				Measures: []historic_consomation.Measure{
+				Measures: []historic_consumption.Measure{
 					{
-						Consomation: 12,
+						Consumption: 12,
 						Begin:       "2024/08/01",
 						End:         "2024/08/31",
 					},
 					{
-						Consomation: 5,
+						Consumption: 5,
 						Begin:       "2024/05/01",
 						End:         "2024/05/31",
 					},
 					{
-						Consomation: 67,
+						Consumption: 67,
 						Begin:       "2024/10/01",
 						End:         "2024/10/31",
 					},
@@ -47,9 +46,9 @@ func TestEstimationService_GetDates(t *testing.T) {
 		},
 		{
 			name: "should return an error when no measure is present",
-			historic: historic_consomation.HistoricConsomation{
+			historic: historic_consumption.HistoricConsumption{
 				Client_Id: "Client",
-				Measures:  []historic_consomation.Measure{},
+				Measures:  []historic_consumption.Measure{},
 			},
 			expectedBegin: time.Time{},
 			expectedEnd:   time.Time{},
@@ -78,32 +77,32 @@ func TestEstimationService_GetDates(t *testing.T) {
 func TestEstimationService_Estimate(t *testing.T) {
 	testCases := []struct {
 		name               string
-		historic           historic_consomation.HistoricConsomation
-		expectedEstimation []estimation.ConsomationEstimation
+		historic           historic_consumption.HistoricConsumption
+		expectedEstimation []estimation.ConsumptionEstimation
 	}{
 		{
 			name: "should return all expected estimations",
-			historic: historic_consomation.HistoricConsomation{
+			historic: historic_consumption.HistoricConsumption{
 				Client_Id: "Client",
-				Measures: []historic_consomation.Measure{
+				Measures: []historic_consumption.Measure{
 					{
-						Consomation: 12,
+						Consumption: 12,
 						Begin:       "2024/08/01",
 						End:         "2024/08/31",
 					},
 					{
-						Consomation: 5,
+						Consumption: 5,
 						Begin:       "2024/05/01",
 						End:         "2024/05/31",
 					},
 					{
-						Consomation: 67,
+						Consumption: 67,
 						Begin:       "2024/10/01",
 						End:         "2024/10/31",
 					},
 				},
 			},
-			expectedEstimation: []estimation.ConsomationEstimation{
+			expectedEstimation: []estimation.ConsumptionEstimation{
 				{Id: "BASE", Estimation: uint16(84)},
 				{Id: "OFF-PEAK", Estimation: uint16(42)},
 				{Id: "PEAK", Estimation: uint16(42)},

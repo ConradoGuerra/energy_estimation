@@ -5,10 +5,10 @@ import "time"
 type Estimation struct {
 	Begin                  time.Time
 	End                    time.Time
-	ConsomationsEstimation []ConsomationEstimation
+	ConsumptionEstimations []ConsumptionEstimation
 }
 
-type ConsomationEstimation struct {
+type ConsumptionEstimation struct {
 	Id         string
 	Estimation uint16
 }

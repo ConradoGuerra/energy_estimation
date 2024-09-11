@@ -1,21 +1,21 @@
 package estimation
 
 import (
-	"energy_estimation/src/domain/historic_consomation"
+	"energy_estimation/src/domain/historic_consumption"
 	"energy_estimation/src/domain/tariff"
 	"fmt"
 	"time"
 )
 
 type IEstimationService interface {
-	GetDates(historic *historic_consomation.HistoricConsomation) (time.Time, time.Time, error)
-	Estimate(historic *historic_consomation.HistoricConsomation, tariffsRules *[]tariff.TariffRule) uint16
+	GetDates(historic *historic_consumption.HistoricConsumption) (time.Time, time.Time, error)
+	Estimate(historic *historic_consumption.HistoricConsumption, tariffsRules *[]tariff.TariffRule) uint16
 }
 type EstimationService struct {
 	IEstimationService
 }
 
-func (s *EstimationService) GetDates(historic *historic_consomation.HistoricConsomation) (time.Time, time.Time, error) {
+func (s *EstimationService) GetDates(historic *historic_consumption.HistoricConsumption) (time.Time, time.Time, error) {
 	if len(historic.Measures) == 0 {
 		return time.Time{}, time.Time{}, fmt.Errorf("no measures available")
 	}
@@ -43,26 +43,26 @@ func (s *EstimationService) GetDates(historic *historic_consomation.HistoricCons
 
 }
 
-func (s *EstimationService) Estimate(historic *historic_consomation.HistoricConsomation, tariffsRules *[]tariff.TariffRule) []ConsomationEstimation {
+func (s *EstimationService) Estimate(historic *historic_consumption.HistoricConsumption, tariffsRules *[]tariff.TariffRule) []ConsumptionEstimation {
 	totalMeasures := calculateTotalMeasure(historic)
 	return applyTariffs(totalMeasures, tariffsRules)
 
 }
 
-func calculateTotalMeasure(historic *historic_consomation.HistoricConsomation) uint16 {
+func calculateTotalMeasure(historic *historic_consumption.HistoricConsumption) uint16 {
 	var totalMeasures uint16 = 0
 	for _, measure := range historic.Measures {
-		totalMeasures += measure.Consomation
+		totalMeasures += measure.Consumption
 
 	}
 	return totalMeasures
 }
 
-func applyTariffs(totalMeasures uint16, tariffsRules *[]tariff.TariffRule) []ConsomationEstimation {
-	estimations := make([]ConsomationEstimation, len(*tariffsRules))
+func applyTariffs(totalMeasures uint16, tariffsRules *[]tariff.TariffRule) []ConsumptionEstimation {
+	estimations := make([]ConsumptionEstimation, len(*tariffsRules))
 
 	for i, estimation := range *tariffsRules {
-		estimations[i] = ConsomationEstimation{
+		estimations[i] = ConsumptionEstimation{
 			Id:         estimation.Id,
 			Estimation: uint16(float32(totalMeasures) * estimation.Ratio)}
 	}

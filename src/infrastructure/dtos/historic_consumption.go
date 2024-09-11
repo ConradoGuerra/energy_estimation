@@ -1,12 +1,12 @@
-package historic_consomation
+package dtos
 
-type HistoricConsomation struct {
+type HistoricConsumption struct {
 	Client_Id string
 	Measures  []Measure
 }
 
 type Measure struct {
-	Consomation uint16
+	Consumption uint16
 	Begin       string
 	End         string
 }
