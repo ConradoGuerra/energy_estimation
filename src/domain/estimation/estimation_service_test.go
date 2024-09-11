@@ -2,6 +2,7 @@ package estimation_test
 
 import (
 	"energy_estimation/src/domain/estimation"
+	"energy_estimation/src/domain/historic_consumption"
 	"energy_estimation/src/domain/tariff"
 	"errors"
 	"testing"
