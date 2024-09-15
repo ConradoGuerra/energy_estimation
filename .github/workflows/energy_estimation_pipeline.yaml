@@ -40,8 +40,8 @@ jobs:
       - name: Build Energy Estimation Project
         run: go build -v ./...
 
-      - name: Upload Build Artifacts
-        run: actions/upload-artifact@v4
+      - name: Upload Project Build Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: go-build
           path: ./build/
