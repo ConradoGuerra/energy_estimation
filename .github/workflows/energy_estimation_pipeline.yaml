@@ -38,10 +38,10 @@ jobs:
         run: go test ./... -v
 
       - name: Build Energy Estimation Project
-        run: go build -v ./...
+        run: go build -o ./bin/
 
-      - name: Upload Project Build Artifact
+      - name: Upload Project Built Artifact
         uses: actions/upload-artifact@v4
         with:
           name: go-build
-          path: ./build/
+          path: ./bin/
