@@ -1,9 +1,9 @@
 package estimation_test
 
 import (
-	"energy_estimation/src/domain/estimation"
-	"energy_estimation/src/domain/historic_consumption"
-	"energy_estimation/src/domain/tariff"
+	"energy_estimation/domain/estimation"
+	"energy_estimation/domain/historic_consumption"
+	"energy_estimation/domain/tariff"
 	"errors"
 	"testing"
 	"time"
@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEstimationService_GetDates(t *testing.T) {
+func TestService_GetDates(t *testing.T) {
 	var testCases = []struct {
 		name          string
 		historic      historic_consumption.HistoricConsumption
@@ -75,7 +75,7 @@ func TestEstimationService_GetDates(t *testing.T) {
 	}
 }
 
-func TestEstimationService_Estimate(t *testing.T) {
+func TestService_Estimate(t *testing.T) {
 	testCases := []struct {
 		name               string
 		historic           historic_consumption.HistoricConsumption

@@ -1,13 +1,13 @@
-package services
+package factory
 
 import (
-	"energy_estimation/src/domain/estimation"
-	"energy_estimation/src/domain/historic_consumption"
-	"energy_estimation/src/domain/tariff"
+	"energy_estimation/domain/estimation"
+	"energy_estimation/domain/historic_consumption"
+	"energy_estimation/domain/tariff"
 	"fmt"
 )
 
-func NewEstimationService(historic *historic_consumption.HistoricConsumption) (estimation.Estimation, error) {
+func CreateEstimationService(historic *historic_consumption.HistoricConsumption) (estimation.Estimation, error) {
 	service := &estimation.EstimationService{}
 	begin, end, error := service.GetDates(historic)
 	if error != nil {

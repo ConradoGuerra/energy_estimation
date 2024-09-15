@@ -1,8 +1,8 @@
 package estimation
 
 import (
-	"energy_estimation/src/domain/historic_consumption"
-	"energy_estimation/src/domain/tariff"
+	"energy_estimation/domain/historic_consumption"
+	"energy_estimation/domain/tariff"
 	"fmt"
 	"time"
 )
