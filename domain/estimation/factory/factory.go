@@ -3,7 +3,7 @@ package factory
 import (
 	"energy_estimation/domain/estimation"
 	"energy_estimation/domain/historic_consumption"
-	"energy_estimation/domain/tariff"
+	"energy_estimation/infrastructure/repositories/in_memory"
 	"fmt"
 )
 
@@ -13,7 +13,8 @@ func CreateEstimationService(historic *historic_consumption.HistoricConsumption)
 	if error != nil {
 		return estimation.Estimation{}, fmt.Errorf("error %v", error)
 	}
-	estimations := service.Estimate(historic, tariff.TariffsRules)
+	tariffRepository := in_memory.InMemoryTariffRepo{}
+	estimations := service.Estimate(historic, tariffRepository.GetTariffs())
 
 	return estimation.Estimation{
 		Begin:                  begin,

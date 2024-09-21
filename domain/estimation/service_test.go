@@ -3,7 +3,7 @@ package estimation_test
 import (
 	"energy_estimation/domain/estimation"
 	"energy_estimation/domain/historic_consumption"
-	"energy_estimation/domain/tariff"
+	"energy_estimation/infrastructure/repositories/in_memory"
 	"errors"
 	"testing"
 	"time"
@@ -116,7 +116,8 @@ func TestService_Estimate(t *testing.T) {
 		t.Run(testCase.name, func(t *testing.T) {
 			assert := assert.New(t)
 			estimationService := estimation.EstimationService{}
-			estimation := estimationService.Estimate(&testCase.historic, tariff.TariffsRules)
+			tariffRepository := in_memory.InMemoryTariffRepo{}
+			estimation := estimationService.Estimate(&testCase.historic, tariffRepository.GetTariffs())
 
 			assert.Equal(testCase.expectedEstimation, estimation)
 		})
