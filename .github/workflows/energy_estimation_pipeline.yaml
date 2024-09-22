@@ -67,8 +67,10 @@ jobs:
       - name: Build Docker image
         id: build-image
         run: |
-          docker build -t ${{ secrets.PROJECT_NAME }}:latest .
-          docker tag ${{ secrets.PROJECT_NAME }}:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.PROJECT_NAME }}:latest
+          IMAGE_TAG=${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.PROJECT_NAME }}:latest
+          docker build -t $IMAGE_TAG .
+          docker tag $IMAGE_TAG
+          echo "::set-output name=image::$IMAGE_TAG"
 
       - name: Push Docker image to ECR
         run: |
