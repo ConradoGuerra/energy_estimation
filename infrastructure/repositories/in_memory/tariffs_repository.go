@@ -8,7 +8,7 @@ import (
 type InMemoryTariffRepo struct{}
 
 func (i InMemoryTariffRepo) GetTariffs() *[]tariff.TariffRule {
-	fmt.Println("Providing from InMemoryTariffRepository")
+	fmt.Println("Providing tariffs from InMemoryTariffRepository")
 	return &[]tariff.TariffRule{
 		{Id: "BASE", Ratio: 1},
 		{Id: "OFF-PEAK", Ratio: .5},
