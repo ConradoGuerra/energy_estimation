@@ -1,10 +1,14 @@
 package in_memory
 
-import "energy_estimation/domain/tariff"
+import (
+	"energy_estimation/domain/tariff"
+	"fmt"
+)
 
 type InMemoryTariffRepo struct{}
 
 func (i InMemoryTariffRepo) GetTariffs() *[]tariff.TariffRule {
+	fmt.Println("Providing from InMemoryTariffRepository")
 	return &[]tariff.TariffRule{
 		{Id: "BASE", Ratio: 1},
 		{Id: "OFF-PEAK", Ratio: .5},
