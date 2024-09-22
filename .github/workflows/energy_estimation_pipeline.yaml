@@ -60,11 +60,12 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Log in to Amazon ECR
+      - name: Login to Amazon ECR
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
       - name: Build Docker image
+        id: build-image
         run: |
           docker build -t ${{ secrets.PROJECT_NAME }}:latest .
           docker tag ${{ secrets.PROJECT_NAME }}:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.PROJECT_NAME }}:latest
@@ -77,3 +78,11 @@ jobs:
         run: |
           aws ecs describe-task-definition --task-definition ${{ secrets.TASK_FAMILY }} --query taskDefinition > task-definition.json
           cat task-definition.json
+
+      - name: Fill in new image ID in task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: gocontainer
+          image: ${{ steps.build-image.outputs.image }}
