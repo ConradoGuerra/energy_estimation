@@ -60,6 +60,13 @@ jobs:
       - name: Set up Docker
         uses: docker/setup-buildx-action@v2
 
+      - name: Push Docker Image to ECR
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ${{ secrets.AWS_REGION }}
+
       - name: Log in to Amazon ECR
         run: |
           aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
@@ -73,15 +80,17 @@ jobs:
         run: |
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.PROJECT_NAME }}:latest
 
-      - name: Install jq
-        run: sudo apt-get install -y jq
+      - uses: actions/checkout@v3
+      - name: Update Task Definition
+        uses: aws-actions/ecs-task-definition@v1
+        with:
+          task-definition: arn:aws:ecs:eu-west-3:796973507503:task-definition/${{ secrets.TASK_FAMILY }}:0
+          image: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.PROJECT_NAME }}:latest
 
-      - name: Register new task definition
-        run: |
-          export TASK_DEFINITION=$(aws ecs describe-task-definition --task-definition ${{ secrets.TASK_FAMILY }} --query taskDefinition --output json)
-          export NEW_TASK_DEFINITION=$(echo $TASK_DEFINITION | jq '.containerDefinitions[0].image="${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.PROJECT_NAME }}:latest" | .revision=($TASK_DEFINITION.revision+1)')
-          echo $NEW_TASK_DEFINITION | aws ecs register-task-definition --cli-input-json file://-
-
-      - name: Update ECS service
-        run: |
-          aws ecs update-service --cluster ${{ secrets.CLUSTER_NAME }} --service ${{ secrets.SERVICE_NAME }} --force-new-deployment
+      - name: Update Service
+        uses: aws-actions/ecs-update-service@v1
+        with:
+          service: ${{ secrets.SERVICE_NAME }}
+          cluster: ${{ secrets.CLUSTER_NAME }}
+          task-definition: arn:aws:ecs:eu-west-3:796973507503:task-definition/${{ secrets.TASK_FAMILY }}:0
+          desired-count: 0
