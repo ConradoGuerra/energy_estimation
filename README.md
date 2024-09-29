@@ -122,7 +122,7 @@ You can interact with the Energy Estimation Service through an **API** once the 
 
 ## Testing
 
-Unit tests ensure the correctness of the core estimation logic:
+At this moment only two unit tests from the core of the project:
 
 - `domain/estimation/service_test.go`
 - `domain/tariff/service_test.go`
